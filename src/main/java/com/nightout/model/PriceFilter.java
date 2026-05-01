@@ -5,8 +5,8 @@ public class PriceFilter {
     public enum Mode { FREE, RANGE, ANY}
 
     private final Mode mode;
-    private final double minPrice;
-    private final double maxPrice;
+    private final Double minPrice;
+    private final Double maxPrice;
 
     private PriceFilter(Mode mode, Double minPrice, Double maxPrice) {
         this.mode = mode;
@@ -29,10 +29,10 @@ public class PriceFilter {
     public Mode getMode() {
         return mode;
     }
-    public double getMinPrice() {
+    public Double getMinPrice() {
         return minPrice;
     }
-    public double getMaxPrice() {
+    public Double getMaxPrice() {
         return maxPrice;
     }
 
