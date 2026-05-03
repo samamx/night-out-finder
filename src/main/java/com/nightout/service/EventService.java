@@ -3,36 +3,28 @@ package com.nightout.service;
 import com.nightout.client.EventAggregator;
 import com.nightout.model.Event;
 import com.nightout.model.PriceFilter;
+import com.nightout.nlp.NlpService;
 
 import java.util.List;
 
 public class EventService {
+
     private final EventAggregator aggregator;
-    public EventService(EventAggregator aggregator) {
+    private final NlpService nlpService;
+
+    public EventService(EventAggregator aggregator, NlpService nlpService) {
         this.aggregator = aggregator;
+        this.nlpService = nlpService;
     }
 
     public List<Event> findEvents(String userInput, PriceFilter priceFilter, int perSource) {
-        String keyword = extractKeyword(userInput);
-        System.out.println("\n Searching for \"" + keyword + "\" in London — " + priceFilter + "...\n");
+        // Phase 3 — use OpenAI to extract keyword instead of simple extraction
+        String keyword = nlpService.extractKeyword(userInput);
+        System.out.println("\n🔍 Searching for \"" + keyword + "\" in London — " + priceFilter + "...\n");
         return aggregator.search(keyword, priceFilter, perSource);
     }
 
-    private String extractKeyword(String userInput) {
-        String[] fillerWords = {"i", "want", "to","see", "go", "a", "an", "the",
-                                "some", "feel", "like", "fancy", "looking", "for"};
-        String[] words = userInput.toLowerCase().trim().split("\\s+");
-        for (String word : words) {
-            boolean isFiller = false;
-            for (String filler : fillerWords) {
-                if (word.equals(filler)) { isFiller = true; break; }
-            }
-            if (!isFiller && word.length() > 2) return word;
-        }
-        return userInput.trim();
-    }
-
     public void shutdown() {
-            aggregator.shutdown();
+        aggregator.shutdown();
     }
 }

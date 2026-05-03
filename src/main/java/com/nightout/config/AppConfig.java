@@ -5,12 +5,24 @@ import com.nightout.service.EventService;
 import io.github.cdimascio.dotenv.Dotenv;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import com.nightout.nlp.NlpService;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Configuration
 public class AppConfig {
+
+    @Bean
+    public NlpService nlpService(Dotenv dotenv) {
+        String openAiKey = dotenv.get("OPENAI_API_KEY", "");
+        if (openAiKey.isBlank()) {
+            System.out.println("No OpenAI key found — NLP will use fallback extraction");
+        } else {
+            System.out.println("OpenAI connected");
+        }
+        return new NlpService(openAiKey);
+    }
 
     @Bean
     public Dotenv dotenv() {
@@ -58,8 +70,8 @@ public class AppConfig {
     }
 
     @Bean
-    public EventService eventService(EventAggregator eventAggregator) {
-        return new EventService(eventAggregator);
+    public EventService eventService(EventAggregator eventAggregator, NlpService nlpService) {
+        return new EventService(eventAggregator, nlpService);
     }
 
 
