@@ -1,6 +1,7 @@
 package com.nightout.config;
 
 import com.nightout.client.*;
+import com.nightout.service.DatabaseService;
 import com.nightout.service.EventService;
 import io.github.cdimascio.dotenv.Dotenv;
 import org.springframework.context.annotation.Bean;
@@ -70,8 +71,8 @@ public class AppConfig {
     }
 
     @Bean
-    public EventService eventService(EventAggregator eventAggregator, NlpService nlpService) {
-        return new EventService(eventAggregator, nlpService);
+    public EventService eventService(EventAggregator eventAggregator, NlpService nlpService, DatabaseService databaseService) {
+        return new EventService(eventAggregator, nlpService, databaseService);
     }
 
 

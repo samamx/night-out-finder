@@ -11,17 +11,25 @@ public class EventService {
 
     private final EventAggregator aggregator;
     private final NlpService nlpService;
+    private final DatabaseService databaseService;
 
-    public EventService(EventAggregator aggregator, NlpService nlpService) {
+    public EventService(EventAggregator aggregator, NlpService nlpService,
+                        DatabaseService databaseService) {
         this.aggregator = aggregator;
         this.nlpService = nlpService;
+        this.databaseService = databaseService;
     }
 
     public List<Event> findEvents(String userInput, PriceFilter priceFilter, int perSource) {
-        // Phase 3 — use OpenAI to extract keyword instead of simple extraction
         String keyword = nlpService.extractKeyword(userInput);
-        System.out.println("\n🔍 Searching for \"" + keyword + "\" in London — " + priceFilter + "...\n");
-        return aggregator.search(keyword, priceFilter, perSource);
+        System.out.println("\nSearching for \"" + keyword + "\" in London — " + priceFilter + "...\n");
+
+        List<Event> events = aggregator.search(keyword, priceFilter, perSource);
+
+        // Save search to database automatically
+        databaseService.saveSearch(userInput, keyword, priceFilter.toString(), events.size());
+
+        return events;
     }
 
     public void shutdown() {

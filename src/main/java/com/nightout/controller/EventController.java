@@ -1,7 +1,10 @@
 package com.nightout.controller;
 
+import com.nightout.entity.SavedEvent;
+import com.nightout.entity.SearchHistory;
 import com.nightout.model.Event;
 import com.nightout.model.PriceFilter;
+import com.nightout.service.DatabaseService;
 import com.nightout.service.EventService;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,12 +13,16 @@ import java.util.List;
 @RestController
 @RequestMapping("/events")
 public class EventController {
-    private final EventService eventService;
 
-    public EventController(EventService eventService) {
+    private final EventService eventService;
+    private final DatabaseService databaseService;
+
+    public EventController(EventService eventService, DatabaseService databaseService) {
         this.eventService = eventService;
+        this.databaseService = databaseService;
     }
 
+    // Search for events
     @GetMapping("/search")
     public List<Event> searchEvents(
             @RequestParam String keyword,
@@ -24,6 +31,24 @@ public class EventController {
 
         PriceFilter priceFilter = parseBudget(budget);
         return eventService.findEvents(keyword, priceFilter, results);
+    }
+
+    // Save an event
+    @PostMapping("/save")
+    public String saveEvent(@RequestBody Event event) {
+        return databaseService.saveEvent(event);
+    }
+
+    // Get all saved events
+    @GetMapping("/saved")
+    public List<SavedEvent> getSavedEvents() {
+        return databaseService.getSavedEvents();
+    }
+
+    // Get search history
+    @GetMapping("/history")
+    public List<SearchHistory> getSearchHistory() {
+        return databaseService.getSearchHistory();
     }
 
     private PriceFilter parseBudget(String budget) {
@@ -42,5 +67,4 @@ public class EventController {
         }
         return PriceFilter.any();
     }
-
 }
