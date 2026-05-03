@@ -9,6 +9,7 @@ import com.nightout.service.EventService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/events")
@@ -66,5 +67,10 @@ public class EventController {
             }
         }
         return PriceFilter.any();
+    }
+
+    @GetMapping("/health")
+    public Map<String, String> health() {
+        return Map.of("status", "ok");
     }
 }
