@@ -27,7 +27,9 @@ public class AppConfig {
 
     @Bean
     public Dotenv dotenv() {
-        return Dotenv.load();
+        return Dotenv.configure()
+                .ignoreIfMissing() // don't crash if .env doesn't exist 
+                .load();
     }
 
     @Bean
