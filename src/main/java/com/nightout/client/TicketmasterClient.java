@@ -14,6 +14,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class TicketmasterClient implements EventSource{
 
@@ -38,10 +40,12 @@ public class TicketmasterClient implements EventSource{
 
     public List<Event> searchEvents(String keyword, PriceFilter priceFilter, int maxResults) throws Exception {
         String encodedKeyword = URLEncoder.encode(keyword, StandardCharsets.UTF_8);
+        String today = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + "T00:00:00Z";
+
         StringBuilder url = new StringBuilder(String.format(
-    "%s?apikey=%s&keyword=%s&city=London&countryCode=GB&size=%d&sort=date,asc",
-    BASE_URL, apiKey, encodedKeyword, maxResults
-    ));
+            "%s?apikey=%s&keyword=%s&city=London&countryCode=GB&size=%d&sort=date,asc&startDateTime=%s",
+            BASE_URL, apiKey, encodedKeyword, maxResults, today
+        ));
 
     if (priceFilter.isFree()) {
         url.append("&priceMin=0&priceMax=0");

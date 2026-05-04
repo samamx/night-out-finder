@@ -23,7 +23,7 @@ public class EventController {
         this.databaseService = databaseService;
     }
 
-    // Search for events
+   
     @GetMapping("/search")
     public List<Event> searchEvents(
             @RequestParam String keyword,
@@ -34,19 +34,19 @@ public class EventController {
         return eventService.findEvents(keyword, priceFilter, results);
     }
 
-    // Save an event
+    
     @PostMapping("/save")
     public String saveEvent(@RequestBody Event event) {
         return databaseService.saveEvent(event);
     }
 
-    // Get all saved events
+    
     @GetMapping("/saved")
     public List<SavedEvent> getSavedEvents() {
         return databaseService.getSavedEvents();
     }
 
-    // Get search history
+    
     @GetMapping("/history")
     public List<SearchHistory> getSearchHistory() {
         return databaseService.getSearchHistory();

@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Night Out Finder — London</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0d0a0f;
+            color: #e8dde8;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(160deg, #1a0f1e 0%, #0d0a0f 100%);
+            padding: 60px 20px 50px;
+            text-align: center;
+            border-bottom: 1px solid #3d1f4422;
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: -60px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, #8b2fc922 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        header .eyebrow {
+            font-size: 0.7rem;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: #c084fc;
+            margin-bottom: 16px;
+            font-weight: 300;
+        }
+
+        header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            color: #f0e6ff;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        header h1 em {
+            color: #c084fc;
+            font-style: italic;
+        }
+
+        header p {
+            color: #7a6b8a;
+            font-size: 0.95rem;
+            font-weight: 300;
+            letter-spacing: 0.5px;
+        }
+
+        /* Container */
+        .container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 48px 24px;
+        }
+
+        /* Search section */
+        .search-section {
+            background: linear-gradient(135deg, #130d17 0%, #0f0a14 100%);
+            border: 1px solid #3d1f4433;
+            border-radius: 16px;
+            padding: 36px;
+            margin-bottom: 36px;
+            box-shadow: 0 8px 32px rgba(139, 47, 201, 0.08);
+        }
+
+        .field-label {
+            display: block;
+            font-size: 0.7rem;
+            color: #7a6b8a;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 16px 20px;
+            background: #0a0710;
+            border: 1px solid #2d1a35;
+            border-radius: 10px;
+            color: #e8dde8;
+            font-size: 0.95rem;
+            font-family: 'Inter', sans-serif;
+            margin-bottom: 28px;
+            outline: none;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .search-input:focus {
+            border-color: #9b5de5;
+            box-shadow: 0 0 0 3px rgba(155, 93, 229, 0.1);
+        }
+
+        .search-input::placeholder {
+            color: #3d2d4a;
+        }
+
+        /* Budget */
+        .budget-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .budget-btn {
+            padding: 9px 22px;
+            border-radius: 24px;
+            border: 1px solid #2d1a35;
+            background: transparent;
+            color: #7a6b8a;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.2s;
+            letter-spacing: 0.3px;
+        }
+
+        .budget-btn:hover {
+            border-color: #9b5de5;
+            color: #c084fc;
+        }
+
+        .budget-btn.active {
+            border-color: #9b5de5;
+            background: rgba(155, 93, 229, 0.12);
+            color: #c084fc;
+        }
+
+        /* Price range */
+        .price-range {
+            display: none;
+            gap: 12px;
+            margin-bottom: 24px;
+            align-items: center;
+        }
+
+        .price-range.visible {
+            display: flex;
+        }
+
+        .price-input {
+            width: 110px;
+            padding: 10px 14px;
+            background: #0a0710;
+            border: 1px solid #2d1a35;
+            border-radius: 8px;
+            color: #e8dde8;
+            font-size: 0.85rem;
+            font-family: 'Inter', sans-serif;
+            outline: none;
+        }
+
+        .price-input:focus {
+            border-color: #9b5de5;
+        }
+
+        .price-range span {
+            color: #3d2d4a;
+            font-size: 0.85rem;
+        }
+
+        /* Search button */
+        .search-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #7c3aed 0%, #9b5de5 50%, #c084fc 100%);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            transition: opacity 0.2s, transform 0.1s;
+        }
+
+        .search-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        .search-btn:active {
+            transform: translateY(0);
+        }
+
+        .search-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 0;
+            margin-bottom: 28px;
+            border-bottom: 1px solid #1e1225;
+        }
+
+        .tab {
+            padding: 12px 24px;
+            cursor: pointer;
+            color: #4a3a5a;
+            font-size: 0.85rem;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+            letter-spacing: 0.5px;
+            font-weight: 400;
+        }
+
+        .tab:hover {
+            color: #9b5de5;
+        }
+
+        .tab.active {
+            color: #c084fc;
+            border-bottom-color: #9b5de5;
+        }
+
+        /* Status */
+        .status {
+            text-align: center;
+            padding: 48px 20px;
+            color: #4a3a5a;
+            font-size: 0.9rem;
+            font-weight: 300;
+            font-style: italic;
+        }
+
+        /* Event cards */
+        .events-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .event-card {
+            background: linear-gradient(135deg, #130d17 0%, #0f0a14 100%);
+            border: 1px solid #2d1a3533;
+            border-radius: 12px;
+            padding: 22px 26px;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .event-card:hover {
+            border-color: #9b5de544;
+            box-shadow: 0 4px 24px rgba(155, 93, 229, 0.08);
+        }
+
+        .event-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 14px;
+            gap: 16px;
+        }
+
+        .event-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1rem;
+            color: #f0e6ff;
+            line-height: 1.4;
+            font-weight: 400;
+        }
+
+        .event-source {
+            font-size: 0.7rem;
+            color: #9b5de5;
+            background: rgba(155, 93, 229, 0.1);
+            border: 1px solid #9b5de533;
+            padding: 4px 12px;
+            border-radius: 20px;
+            white-space: nowrap;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .event-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 8px;
+            margin-bottom: 18px;
+        }
+
+        .event-detail {
+            font-size: 0.8rem;
+            color: #4a3a5a;
+        }
+
+        .event-detail span {
+            color: #9b8aaa;
+        }
+
+        .event-card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            padding-top: 16px;
+            border-top: 1px solid #1e1225;
+        }
+
+        .event-price {
+            font-size: 0.85rem;
+            color: #c084fc;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+        }
+
+        .event-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-link {
+            padding: 7px 16px;
+            border-radius: 8px;
+            border: 1px solid #2d1a35;
+            background: transparent;
+            color: #7a6b8a;
+            font-size: 0.78rem;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s;
+            font-family: 'Inter', sans-serif;
+            letter-spacing: 0.3px;
+        }
+
+        .btn-link:hover {
+            border-color: #4a3a5a;
+            color: #c8b8d8;
+        }
+
+        .btn-save {
+            padding: 7px 16px;
+            border-radius: 8px;
+            border: 1px solid #9b5de544;
+            background: rgba(155, 93, 229, 0.08);
+            color: #c084fc;
+            font-size: 0.78rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Inter', sans-serif;
+            letter-spacing: 0.3px;
+        }
+
+        .btn-save:hover {
+            background: rgba(155, 93, 229, 0.16);
+            border-color: #9b5de5;
+        }
+
+        .btn-save:disabled {
+            opacity: 0.35;
+            cursor: not-allowed;
+        }
+
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 48px;
+            color: #9b5de5;
+        }
+
+        .spinner {
+            width: 28px;
+            height: 28px;
+            border: 2px solid #2d1a35;
+            border-top-color: #9b5de5;
+            border-radius: 50%;
+            animation: spin 0.9s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        .loading p {
+            font-size: 0.85rem;
+            color: #7a6b8a;
+            font-style: italic;
+            font-weight: 300;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Results count */
+        .results-count {
+            font-size: 0.8rem;
+            color: #4a3a5a;
+            margin-bottom: 18px;
+            font-weight: 300;
+            letter-spacing: 0.3px;
+        }
+
+        .results-count span {
+            color: #c084fc;
+            font-weight: 500;
+        }
+
+        /* Divider */
+        .divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #3d1f4433, transparent);
+            margin: 8px 0 24px;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="eyebrow">London · Tonight</div>
+    <h1>Night Out <em>Finder</em></h1>
+    <p>Tell me what you feel like doing and I'll find it for you</p>
+</header>
+
+<div class="container">
+
+    <div class="search-section">
+        <label class="field-label">What do you feel like doing?</label>
+        <input
+            type="text"
+            class="search-input"
+            id="searchInput"
+            placeholder="e.g. I fancy some live jazz and food..."
+        />
+
+        <label class="field-label">Budget</label>
+        <div class="budget-row">
+            <button class="budget-btn" onclick="setBudget('free', this)">Free only</button>
+            <button class="budget-btn" onclick="setBudget('range', this)">Set range</button>
+            <button class="budget-btn active" onclick="setBudget('any', this)">Any price</button>
+        </div>
+
+        <div class="price-range" id="priceRange">
+            <span>£</span>
+            <input type="number" class="price-input" id="minPrice" placeholder="Min" min="0">
+            <span>—</span>
+            <input type="number" class="price-input" id="maxPrice" placeholder="Max" min="0">
+        </div>
+
+        <button class="search-btn" id="searchBtn" onclick="search()">
+            Find Events
+        </button>
+    </div>
+
+    <div class="tabs">
+        <div class="tab active" onclick="showTab('results', this)">Results</div>
+        <div class="tab" onclick="showTab('saved', this)">Saved Events</div>
+    </div>
+
+    <div id="resultsTab">
+        <div class="status" id="status">
+            Tell me what you're in the mood for above...
+        </div>
+        <div class="results-count" id="resultsCount" style="display:none"></div>
+        <div class="events-grid" id="eventsGrid"></div>
+    </div>
+
+    <div id="savedTab" style="display:none">
+        <div class="status" id="savedStatus">Loading your saved events...</div>
+        <div class="events-grid" id="savedGrid"></div>
+    </div>
+
+</div>
+
+<script>
+    let currentBudget = 'any';
+    let savedUrls = new Set();
+
+    function setBudget(type, btn) {
+        currentBudget = type;
+        document.querySelectorAll('.budget-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById('priceRange').classList.toggle('visible', type === 'range');
+    }
+
+    function showTab(tab, el) {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        el.classList.add('active');
+        document.getElementById('resultsTab').style.display = tab === 'results' ? 'block' : 'none';
+        document.getElementById('savedTab').style.display = tab === 'saved' ? 'block' : 'none';
+        if (tab === 'saved') loadSaved();
+    }
+
+    function getBudgetParam() {
+        if (currentBudget === 'free') return 'free';
+        if (currentBudget === 'range') {
+            const min = document.getElementById('minPrice').value || '0';
+            const max = document.getElementById('maxPrice').value || '999';
+            return `${min}-${max}`;
+        }
+        return 'any';
+    }
+
+    async function search() {
+        const keyword = document.getElementById('searchInput').value.trim();
+        if (!keyword) {
+            document.getElementById('status').textContent = 'Please tell me what you feel like doing first...';
+            return;
+        }
+
+        const btn = document.getElementById('searchBtn');
+        btn.disabled = true;
+        btn.textContent = 'Searching...';
+
+        document.getElementById('status').innerHTML = `
+            <div class="loading">
+                <div class="spinner"></div>
+                <p>Finding the perfect events for you...</p>
+            </div>`;
+        document.getElementById('eventsGrid').innerHTML = '';
+        document.getElementById('resultsCount').style.display = 'none';
+
+        try {
+            const budget = getBudgetParam();
+            const res = await fetch(`/events/search?keyword=${encodeURIComponent(keyword)}&budget=${budget}`);
+            const events = await res.json();
+
+            if (events.length === 0) {
+                document.getElementById('status').textContent = 'Nothing found — try something else or adjust your budget';
+            } else {
+                document.getElementById('status').textContent = '';
+                document.getElementById('resultsCount').style.display = 'block';
+                document.getElementById('resultsCount').innerHTML = `<span>${events.length}</span> events found in London`;
+                document.getElementById('eventsGrid').innerHTML = events.map(renderCard).join('');
+            }
+        } catch (err) {
+            document.getElementById('status').textContent = 'Something went wrong — is the server running?';
+        }
+
+        btn.disabled = false;
+        btn.textContent = 'Find Events';
+    }
+
+    async function saveEvent(event) {
+        try {
+            const res = await fetch('/events/save', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(event)
+            });
+            const msg = await res.text();
+            if (msg.includes('successfully')) {
+                savedUrls.add(event.url);
+                document.querySelectorAll(`[data-url="${event.url}"]`).forEach(btn => {
+                    btn.textContent = '✓ Saved';
+                    btn.disabled = true;
+                });
+            }
+        } catch (err) {
+            console.error('Save failed:', err);
+        }
+    }
+
+    async function loadSaved() {
+        document.getElementById('savedStatus').textContent = 'Loading...';
+        document.getElementById('savedGrid').innerHTML = '';
+        try {
+            const res = await fetch('/events/saved');
+            const events = await res.json();
+            if (events.length === 0) {
+                document.getElementById('savedStatus').textContent = 'Nothing saved yet — find something you love and save it';
+            } else {
+                document.getElementById('savedStatus').textContent = '';
+                document.getElementById('savedGrid').innerHTML = events.map(renderSavedCard).join('');
+            }
+        } catch (err) {
+            document.getElementById('savedStatus').textContent = 'Could not load saved events';
+        }
+    }
+
+    function renderCard(event) {
+        const isSaved = savedUrls.has(event.url);
+        return `
+            <div class="event-card">
+                <div class="event-card-header">
+                    <div class="event-name">${event.name}</div>
+                    <div class="event-source">${event.source}</div>
+                </div>
+                <div class="event-details">
+                    <div class="event-detail">📅 <span>${event.date} at ${event.time}</span></div>
+                    <div class="event-detail">📍 <span>${event.venueName}</span></div>
+                    <div class="event-detail">🎭 <span>${event.genre}</span></div>
+                    <div class="event-detail">📮 <span>${event.venueAddress}</span></div>
+                </div>
+                <div class="event-card-footer">
+                    <div class="event-price">${event.priceRange}</div>
+                    <div class="event-actions">
+                        <a class="btn-link" href="${event.url}" target="_blank">View →</a>
+                        <button
+                            class="btn-save"
+                            data-url="${event.url}"
+                            ${isSaved ? 'disabled' : ''}
+                            onclick='saveEvent(${JSON.stringify(event)})'
+                        >${isSaved ? '✓ Saved' : '+ Save'}</button>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    function renderSavedCard(event) {
+        return `
+            <div class="event-card">
+                <div class="event-card-header">
+                    <div class="event-name">${event.name}</div>
+                    <div class="event-source">${event.source}</div>
+                </div>
+                <div class="event-details">
+                    <div class="event-detail">📅 <span>${event.date} at ${event.time}</span></div>
+                    <div class="event-detail">📍 <span>${event.venueName}</span></div>
+                    <div class="event-detail">🎭 <span>${event.genre}</span></div>
+                    <div class="event-detail">📮 <span>${event.venueAddress}</span></div>
+                </div>
+                <div class="event-card-footer">
+                    <div class="event-price">${event.priceRange}</div>
+                    <div class="event-actions">
+                        <a class="btn-link" href="${event.url}" target="_blank">View →</a>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    document.getElementById('searchInput').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') search();
+    });
+</script>
+
+</body>
+</html>

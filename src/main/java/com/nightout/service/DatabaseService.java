@@ -25,7 +25,7 @@ public class DatabaseService {
         SearchHistory search = new SearchHistory(userInput, extractedKeyword,
                                                 budget, resultsCount);
         searchHistoryRepository.save(search);
-        System.out.println("💾 Search saved to database");
+        System.out.println("Search saved to database");
     }
 
     public List<SearchHistory> getSearchHistory() {
